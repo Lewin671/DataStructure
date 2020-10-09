@@ -7,9 +7,9 @@ package tree.application;
 */
 
 public class UnionFindSet {
-    int[] father; // 记录父亲结点的树
-    int[] rank; // 记录树的秩(树的高度的上界)
-    int n;
+    private int[] father; // 记录父亲结点的树
+    private int[] rank; // 记录树的秩(树的高度的上界)
+    private int n;
 
 
     // 给定最多是多少结点

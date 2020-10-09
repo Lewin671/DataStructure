@@ -17,7 +17,7 @@ public class BinarySearchTreeTest {
             System.out.println(s);
         }
 
-        System.out.println(s.inOrder());
+        System.out.println(s.postOrder());
 
         in.close();
     }
