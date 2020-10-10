@@ -69,7 +69,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
 
         // 不存在包含key的结点,删除无效
         if (p == null) {
-            return;
+            throw new RuntimeException("the key doesn't exist in BinarySearchTree");
         }
 
         // 此时必定存在p在树中，此时用p的中序后继来替代p

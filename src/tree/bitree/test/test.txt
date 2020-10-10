@@ -1,0 +1,63 @@
+10
+1 2 3 4 5 6 7 8 9 10
+RR旋转
+RR旋转
+RR旋转
+RR旋转
+RR旋转
+RR旋转
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+4(bf: 1)
+├──2(bf: 0)
+│  ├──1(bf: 0)
+│  └──3(bf: 0)
+└──8(bf: 0)
+   ├──6(bf: 0)
+   │  ├──5(bf: 0)
+   │  └──7(bf: 0)
+   └──9(bf: 1)
+      ├──null
+      └──10(bf: 0)
+
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+3
+左孩子类型
+4(bf: 1)
+├──2(bf: -1)
+│  └──1(bf: 0)
+│  └──null
+└──8(bf: 0)
+   ├──6(bf: 0)
+   │  ├──5(bf: 0)
+   │  └──7(bf: 0)
+   └──9(bf: 1)
+      ├──null
+      └──10(bf: 0)
+
+4
+中序后继类型
+左孩子类型
+RL旋转
+6(bf: 0)
+├──5(bf: 0)
+│  ├──2(bf: -1)
+│  │  └──1(bf: 0)
+│  │  └──null
+│  └──2(bf: -1)
+│     └──1(bf: 0)
+│     └──null
+└──8(bf: 1)
+   ├──7(bf: 0)
+   └──9(bf: 1)
+      ├──null
+      └──10(bf: 0)
+
+5
+中序后继类型
+左孩子类型
+LL旋转
+LL旋转
+Exception in thread "main" java.lang.RuntimeException: 删除操作不符合AVL树的定义
+	at tree.bitree.test.AVLTreeTest.main(AVLTreeTest.java:41)
+
+Process finished with exit code 1

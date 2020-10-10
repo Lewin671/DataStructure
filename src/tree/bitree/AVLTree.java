@@ -1,11 +1,9 @@
 package tree.bitree;
 
 import tree.node.AVLTreeNode;
-import tree.node.TreeNode;
 
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+
 
 // AVL树的实现
 
@@ -16,170 +14,155 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         super(comparator);
     }
 
-    public AVLTree(TreeNode<T> treeRoot, Comparator<T> comparator) {
+    public AVLTree(AVLTreeNode<T> treeRoot, Comparator<T> comparator) {
         super(treeRoot, comparator);
     }
 
-    // 插入一个结点
+    /**
+     * insert a AVLTreeNode.
+     * if there exists an the same key element, we will not insert again.
+     *
+     * @param element The element that will inserted into the tree
+     */
     public void insert(AVLTreeNode<T> element) {
-        if (treeRoot == null) {
-            treeRoot = element;
-        } else {
-            LinkedList<AVLTreeNode<T>> path = new LinkedList<>(); //记录从根节点到插入位置的路径
-            LinkedList<Boolean> isLeftList = new LinkedList<>();
-
-            AVLTreeNode<T> q = treeRoot;
-            AVLTreeNode<T> p = null; // parent of q
-            while (q != null) {
-                path.addFirst(q);
-                p = q;
-                if (c.compare(q.getKey(), element.getKey()) > 0) {
-                    q = q.getLeft();
-                    isLeftList.addFirst(true);
-                } else {
-                    q = q.getRight();
-                    isLeftList.addFirst(false);
-                }
-            }
-
-            // 插入操作
-            // 由于排除了treeRoot == null的操作，于是p!=null
-            if (isLeftList.get(0)) {
-                p.setLeft(element);
-            } else {
-                p.setRight(element);
-            }
-
-            int k = -1;
-            // 更新balance factor
-            for (int i = 0; i < isLeftList.size(); i++) {
-                AVLTreeNode<T> node = path.get(i);
-                if (isLeftList.get(i)) {
-                    node.getLeft().increaseHeight();
-                } else {
-                    node.getRight().increaseHeight();
-                }
-
-                if (node.getBf() > 1 || node.getBf() < -1) {
-                    k = i;
-                    break;
-                }
-
-                // 在这条路径上出现bf = 0，则说明插入结点不改变此树的高度
-                if (node.getBf() == 0) {
-                    break;
-                }
-            }
-
-            // 发现不平衡的结点，其下标为k，那么其父节点下标为k+1
-            if (k != -1) {
-                AVLTreeNode<T> unbalanceNode = path.get(k);
-                AVLTreeNode<T> parent = null;
-                boolean isLeftRelation = false;
-                // 得到不平衡结点的父亲和它们之间的关系（是左孩子还是右孩子?）
-                if (k + 1 < path.size()) {
-                    parent = path.get(k + 1);
-                    isLeftRelation = isLeftList.get(k + 1);
-                }
-
-                if (isLeftList.get(k) && isLeftList.get(k - 1)) {
-                    //System.out.println(unbalanceNode + "LL旋转");
-                    LLRotate(unbalanceNode, parent,isLeftRelation);
-                } else if (!isLeftList.get(k) && !isLeftList.get(k - 1)) {
-                    //System.out.println(unbalanceNode + "RR旋转");
-                    RRRotate(unbalanceNode, parent,isLeftRelation);
-                } else if (isLeftList.get(k) && !isLeftList.get(k - 1)) {
-                    //System.out.println(unbalanceNode + "LR旋转");
-                    LRRotate(unbalanceNode, parent,isLeftRelation);
-                } else {
-                    //System.out.println(unbalanceNode + "RL旋转");
-                    RLRotate(unbalanceNode, parent,isLeftRelation);
-                }
-            }
-        }
-    }
-
-    public void remove(T key) {
-
+        if (search(element.getKey()) == null)
+            treeRoot = insert(treeRoot, element);
     }
 
     /**
-     * LL rotate
-     * @param node the unbalanced node
-     * @param parent the parent of the unbalance node
-     * @param isLeft whether the node is the left child of its parent
+     * insert an element node recursively, remaining the balance of AVLTree
+     *
+     * @param root    the AVLTree root
+     * @param element The element that will inserted into the tree
+     * @return an new root with inserted element
      */
-    private void LLRotate(AVLTreeNode<T> node, AVLTreeNode<T> parent,boolean isLeft) {
-        AVLTreeNode<T> newRoot = node.getLeft();
-        // 此时node就是根结点
-        if (parent == null) {
-            treeRoot = newRoot;
-            node.setLeft(newRoot.getRight());
-            treeRoot.setRight(node);
-        } else {
-            // 判断node是parent的左子树还是右子树
-            // 注意，这里不能简单地根据parent的key值和node的key值来判断
-            if (isLeft) { // 左子树
-                //parent.left = newRoot;
-                parent.setLeft(newRoot);
+    private AVLTreeNode<T> insert(AVLTreeNode<T> root, AVLTreeNode<T> element) {
+        // 如果元素为空，则不插入
+        if (element == null) {
+            return root;
+        }
+
+        // 如果当前的根为空，则用当前元素看做是根
+        if (root == null) {
+            return element;
+        }
+
+        int cmp = c.compare(element.getKey(), root.getKey());
+
+        if (cmp > 0) {
+            AVLTreeNode<T> rightChild = root.getRight();
+            // 如果没有右孩子了，那么就只能直接插入了
+            if (rightChild == null) {
+                root.setRight(element);
             } else {
-                //parent.right = newRoot;
-                parent.setRight(newRoot);
+                root.setRight(insert(rightChild, element));
             }
-            //node.left = newRoot.right;
-            node.setLeft(newRoot.getRight());
-            //newRoot.right = node;
-            newRoot.setRight(node);
+        } else {
+            AVLTreeNode<T> leftChild = root.getLeft();
+            if (leftChild == null) {
+                root.setLeft(element);
+            } else {
+                root.setLeft(insert(leftChild, element));
+            }
         }
 
         // 更新高度
-        node.setHeight(Math.max(node.getLeftHeight(), node.getRightHeight()) + 1);
-        newRoot.setHeight(Math.max(newRoot.getLeftHeight(), newRoot.getRightHeight()) + 1);
+        root.updateHeight();
+
+        // 对树进行平衡
+        return balance(root);
     }
 
-    private void RRRotate(AVLTreeNode<T> node, AVLTreeNode<T> parent,boolean isLeft) {
-        AVLTreeNode<T> newRoot = node.getRight();
-        // 此时node就是根结点
-        if (parent == null) {
-            treeRoot = newRoot;
-            //node.right = newRoot.getLeft();
-            node.setRight(newRoot.getLeft());
-            //treeRoot.left = node;
-            treeRoot.setLeft(node);
+    // 删除一个结点
+
+    /**
+     * remove an AVLTreeNode by an key.
+     * We do not allow to remove an nonexistent key, which will throw an exception.
+     *
+     * @param key the key of a treeNode which will be removed
+     */
+    public void remove(T key) {
+        // 确保被删除的元素是存在的
+        if (search(key) == null) {
+            throw new RuntimeException("the key doesn't exist in AVLTree");
+            // 测试的时候就直接返回
+            // System.out.println("元素不在AVL树中，直接返回");
+            // return;
+        }
+
+        // update new tree root
+        treeRoot = remove(treeRoot, key);
+    }
+
+    /**
+     * 给公共方法remove调用的递归函数
+     *
+     * @param root 这里的root需要确保不为null
+     */
+    private AVLTreeNode<T> remove(AVLTreeNode<T> root, T key) {
+        AVLTreeNode<T> res;
+
+        int cmp = c.compare(key, root.getKey());
+        if (cmp < 0) { // 在左子树上删除
+            root.setLeft(remove(root.getLeft(), key));
+            res = root;
+        } else if (cmp > 0) { // 在右子树上删除
+            root.setRight(remove(root.getRight(), key));
+            res = root;
         } else {
-            // 判断node是parent的左子树还是右子树
-            if (isLeft) { // 左子树
-                //parent.left = newRoot;
-                parent.setLeft(newRoot);
-            } else {
-                //parent.right = newRoot;
-                parent.setRight(newRoot);
+            // root的右孩子
+            final AVLTreeNode<T> rightChild = root.getRight();
+
+            // 如果右子树为空,则用其左子树的第一个结点来代替root
+            if (rightChild == null) {
+                res = root.getLeft();
+            } else { // 如果右子树不为空
+                // root的右孩子的左孩子
+                AVLTreeNode<T> subLeftChild = rightChild.getLeft();
+
+                if (subLeftChild == null) {
+                    // 用rightChild代替root
+                    res = rightChild;
+                    // 将root的左孩子给rightChild，右孩子保留原状
+                    rightChild.setLeft(root.getLeft());
+                } else {
+                    // 用中序后继来替代root
+                    // 此时的中序后继在右孩子的左子树上
+                    AVLTreeNode<T> successor = rightChild;
+                    while (successor.getLeft() != null) {
+                        successor = successor.getLeft();
+                    }
+
+                    // 注意,successor的改动会影响后续的结果
+                    AVLTreeNode<T> newRightChild = remove(rightChild, successor.getKey());
+                    successor.setRight(newRightChild);
+                    successor.setLeft(root.getLeft());
+
+                    res = successor;
+                }
             }
-            //node.right = newRoot.left;
-            node.setRight(newRoot.getLeft());
-            //newRoot.left = node;
-            newRoot.setLeft(node);
         }
 
         // 更新高度
-        node.setHeight(Math.max(node.getLeftHeight(), node.getRightHeight()) + 1);
-        newRoot.setHeight(Math.max(newRoot.getLeftHeight(), newRoot.getRightHeight()) + 1);
+        if (res != null) {
+            res.updateHeight();
+            res = balance(res);
+        }
+
+        return res;
     }
 
-    private void LRRotate(AVLTreeNode<T> node, AVLTreeNode<T> parent,boolean isLeft) {
-        RRRotate(node.getLeft(), node,true);
-        LLRotate(node, parent,isLeft);
-    }
-
-    private void RLRotate(AVLTreeNode<T> node, AVLTreeNode<T> parent,boolean isLeft) {
-        LLRotate(node.getRight(), node,false);
-        RRRotate(node, parent,isLeft);
-    }
 
     public AVLTreeNode<T> getTreeRoot() {
         return treeRoot;
     }
 
+    /**
+     * verify an tree with root whether is an AVLTree
+     *
+     * @param root the root of an AVLTree
+     * @return true if the root is an AVLTree. Otherwise, return false
+     */
     private boolean verifyAVLTree(AVLTreeNode<T> root) {
         if (root == null) {
             return true;
@@ -190,7 +173,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
     }
 
     public boolean verifyAVLTree() {
-        return verifyAVLTree(this.treeRoot);
+        return !verifyAVLTree(this.treeRoot);
     }
 
     @Override
@@ -198,8 +181,108 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return treeRoot;
     }
 
-    public List<T> inOrder() {
-        return super.inOrder();
+    /**
+     * to find the corresponding treeNode by a key
+     *
+     * @param key 查找的关键字
+     * @return a treeNode whose key is equal to the given key
+     */
+    public AVLTreeNode<T> search(T key) {
+        AVLTreeNode<T> root = treeRoot;
+
+        while (root != null) {
+            if (c.compare(root.getKey(), key) > 0) {
+                root = root.getLeft();
+            } else if (c.compare(root.getKey(), key) < 0) {
+                root = root.getRight();
+            } else {
+                return root;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * node                  res
+     * /      \              /     \
+     * res       T1  ->       T2      node
+     * /   \                           /  \
+     * T2     T3                        T3   T1
+     */
+
+    private AVLTreeNode<T> LLRotate(AVLTreeNode<T> node) {
+        AVLTreeNode<T> res = node.getLeft();
+        AVLTreeNode<T> r = res.getRight();
+        // 向右旋转
+        node.setLeft(r);
+        res.setRight(node);
+
+        // 更新height,这个顺序不能反过来!!!
+        node.updateHeight();
+        res.updateHeight();
+        return res;
+    }
+
+    private AVLTreeNode<T> RRRotate(AVLTreeNode<T> node) {
+        AVLTreeNode<T> res = node.getRight();
+        AVLTreeNode<T> l = res.getLeft();
+        // 向右旋转
+        node.setRight(l);
+        res.setLeft(node);
+
+        // 更新height
+        node.updateHeight();
+        res.updateHeight();
+        return res;
+    }
+
+    private AVLTreeNode<T> LRRotate(AVLTreeNode<T> node) {
+        // 先对node.left进行RR旋转
+        node.setLeft(RRRotate(node.getLeft()));
+        node.updateHeight();
+        // 再对node进行LL旋转
+        return LLRotate(node);
+    }
+
+    private AVLTreeNode<T> RLRotate(AVLTreeNode<T> node) {
+        // 先对node.right进行LL旋转
+        node.setRight(LLRotate(node.getRight()));
+        node.updateHeight();
+        return RRRotate(node);
+    }
+
+    /**
+     * according to the offsprings of the node to balance the node
+     *
+     * @param node a node may be balanced
+     * @return a new balanced node root
+     */
+    private AVLTreeNode<T> balance(AVLTreeNode<T> node) {
+        int bf = node.getBf();
+        if (bf > 1) {
+            AVLTreeNode<T> rightChild = node.getRight();
+            // 注意等号的情况
+            if (rightChild.getLeftHeight() <= rightChild.getRightHeight()) {
+                //System.out.println("RR旋转");
+                return RRRotate(node);
+            } else {
+                //System.out.println("RL旋转");
+                return RLRotate(node);
+            }
+        }
+
+        if (bf < -1) {
+            AVLTreeNode<T> leftChild = node.getLeft();
+            if (leftChild.getLeftHeight() < leftChild.getRightHeight()) {
+                //System.out.println("LR旋转");
+                return LRRotate(node);
+            } else {
+                //System.out.println("LL旋转");
+                return LLRotate(node);
+            }
+        }
+
+        return node;
     }
 
 }
