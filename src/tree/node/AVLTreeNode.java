@@ -7,7 +7,7 @@ public class AVLTreeNode<T> extends TreeNode<T> {
     public AVLTreeNode(T key) {
         this.key = key;
         left = right = null;
-        this.height = 0;
+        this.height = 1;
     }
 
     public int getHeight() {
@@ -42,9 +42,6 @@ public class AVLTreeNode<T> extends TreeNode<T> {
         height++;
     }
 
-    public void descreaseHeight() {
-        height--;
-    }
 
     public AVLTreeNode<T> getLeft() {
         return left;
@@ -62,8 +59,12 @@ public class AVLTreeNode<T> extends TreeNode<T> {
         this.right = right;
     }
 
+    public void updateHeight() {
+        this.height = Math.max(getLeftHeight(), getRightHeight()) + 1;
+    }
+
     @Override
     public String toString() {
-        return key.toString() + "(bf: "+ getBf() +")";
+        return key.toString() + "(bf: " + getBf() + ")";
     }
 }
