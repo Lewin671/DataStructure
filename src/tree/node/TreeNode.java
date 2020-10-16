@@ -1,18 +1,12 @@
 package tree.node;
 
-public class TreeNode<T> {
-    protected T key; // 需要给子类继承
-    private TreeNode<T> left, right;
-
-    public TreeNode(T key) {
-        this.key = key;
-        left = right = null;
-    }
-
-    public TreeNode() {
-        left = right = null;
-        key = null;
-    }
+/**
+ * 树结点抽象类，其中key值保存树的关键字
+ *
+ * @param <T> 树结点的类型
+ */
+public abstract class TreeNode<T> {
+    protected T key;
 
     public T getKey() {
         return key;
@@ -22,24 +16,11 @@ public class TreeNode<T> {
         this.key = key;
     }
 
-    public TreeNode<T> getLeft() {
-        return left;
-    }
+    public abstract TreeNode<T> getLeft();
 
-    public void setLeft(TreeNode<T> left) {
-        this.left = left;
-    }
+    public abstract void setLeft(TreeNode<T> left);
 
-    public TreeNode<T> getRight() {
-        return right;
-    }
+    public abstract TreeNode<T> getRight();
 
-    public void setRight(TreeNode<T> right) {
-        this.right = right;
-    }
-
-    @Override
-    public String toString() {
-        return key.toString();
-    }
+    public abstract void setRight(TreeNode<T> right);
 }

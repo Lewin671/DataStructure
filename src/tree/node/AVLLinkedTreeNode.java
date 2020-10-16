@@ -1,62 +1,51 @@
 package tree.node;
 
-public class AVLTreeNode<T> extends TreeNode<T> {
+/**
+ * AVL树的结点
+ *
+ * @param <T> 关键字的类型
+ */
+public class AVLLinkedTreeNode<T> extends LinkedTreeNode<T> {
+    // 树的高度，方便计算balance factor
     private int height;
-    private AVLTreeNode<T> left, right;
 
-    public AVLTreeNode(T key) {
+    public AVLLinkedTreeNode(T key) {
         this.key = key;
         left = right = null;
         this.height = 1;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
+    // 计算balance factor
     public int getBf() {
         return getRightHeight() - getLeftHeight();
     }
 
+    // 获取左孩子的高度
     public int getLeftHeight() {
         if (left == null) {
             return 0;
         } else {
-            return left.height;
+            return getLeft().height;
         }
     }
 
+    // 右孩子的高度
     public int getRightHeight() {
         if (right == null) {
             return 0;
         } else {
-            return right.height;
+            return getRight().height;
         }
     }
 
-    public void increaseHeight() {
-        height++;
+    @Override
+    public AVLLinkedTreeNode<T> getLeft() {
+        return (AVLLinkedTreeNode<T>) left;
     }
 
-
-    public AVLTreeNode<T> getLeft() {
-        return left;
-    }
-
-    public void setLeft(AVLTreeNode<T> left) {
-        this.left = left;
-    }
-
-    public AVLTreeNode<T> getRight() {
-        return right;
-    }
-
-    public void setRight(AVLTreeNode<T> right) {
-        this.right = right;
+    @Override
+    public AVLLinkedTreeNode<T> getRight() {
+        return (AVLLinkedTreeNode<T>) right;
     }
 
     public void updateHeight() {

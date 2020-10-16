@@ -1,7 +1,7 @@
 package tree.bitree.test;
 
 import tree.bitree.BinaryTree;
-import tree.node.TreeNode;
+import tree.node.LinkedTreeNode;
 
 import java.util.Scanner;
 
@@ -15,12 +15,12 @@ public class BiTreeTest {
 
     // 中序遍历建立二叉树
     // 0表示null
-    TreeNode<Integer> buildTree() {
+    LinkedTreeNode<Integer> buildTree() {
         int item = in.nextInt();
         if (item == 0) {
             return null;
         }
-        TreeNode<Integer> root = new TreeNode<>();
+        LinkedTreeNode<Integer> root = new LinkedTreeNode<>();
         root.setKey(item);
         root.setLeft(buildTree());
         root.setRight(buildTree());
@@ -28,7 +28,7 @@ public class BiTreeTest {
     }
 
     void testTraversal(){
-        TreeNode<Integer> tree = buildTree();
+        LinkedTreeNode<Integer> tree = buildTree();
         BinaryTree<Integer> biTree = new BinaryTree<>(tree);
 
         System.out.println(biTree.preOrder());
@@ -37,7 +37,7 @@ public class BiTreeTest {
     }
 
     void deepCloneTest(){
-        TreeNode<Integer> tree = buildTree();
+        LinkedTreeNode<Integer> tree = buildTree();
         BinaryTree<Integer> biTree = new BinaryTree<>(tree);
 
         BinaryTree<Integer> clonedTree = biTree.deepClone();

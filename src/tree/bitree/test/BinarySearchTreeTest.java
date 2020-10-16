@@ -1,7 +1,7 @@
 package tree.bitree.test;
 
 import tree.bitree.BinarySearchTree;
-import tree.node.TreeNode;
+import tree.node.LinkedTreeNode;
 
 import java.util.Scanner;
 
@@ -13,11 +13,11 @@ public class BinarySearchTreeTest {
         int n = in.nextInt();
 
         for (int i = 0; i < n; i++) {
-            s.insert(new TreeNode<>(in.nextInt()));
+            s.insert(new LinkedTreeNode<>(in.nextInt()));
             System.out.println(s);
         }
 
-        System.out.println(s.postOrder());
+        System.out.println(s.inOrder());
 
         in.close();
     }

@@ -1,17 +1,20 @@
 package tree.bitree;
 
-import tree.node.TreeNode;
+import tree.node.LinkedTreeNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-// 二叉查找树(二叉搜索树)
-// 主要包括三个操作: 插入、删除、查找
-
-// 这里的二叉搜索树可以包含重复关键字
-// 对于任意一个结点p，其左子树的全部结点小于key(p)，右子树的结点都大于等于key(p)
+/**
+ * 二叉查找树(二叉搜索树)
+ * 主要包括三个操作: 插入、删除、查找
+ * 对于任意一个结点p，其左子树的全部结点小于key(p)，右子树的结点都大于key(p)
+ * 不可以可以包含重复的key值
+ *
+ * @param <T>
+ */
 public class BinarySearchTree<T> extends BinaryTree<T> {
     protected Comparator<T> c; // 给AVL树继承
 
@@ -20,9 +23,22 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         this.c = comparator;
     }
 
-    public BinarySearchTree(TreeNode<T> treeRoot, Comparator<T> comparator) {
+    public BinarySearchTree(LinkedTreeNode<T> treeRoot, Comparator<T> comparator) {
         this.treeRoot = treeRoot;
         this.c = comparator;
+    }
+
+    public static BinarySearchTree<Integer> getRandomTree(int n){
+        Comparator<Integer> c = Integer::compareTo;
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>(c);
+
+        Random random = new Random();
+
+        for (int i = 0; i < n; i++) {
+            tree.insert(new LinkedTreeNode<>(random.nextInt(10000)));
+        }
+
+        return tree;
     }
 
     /**
@@ -30,11 +46,15 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      *
      * @param element 插入到二叉搜索树的树结点
      */
-    public void insert(TreeNode<T> element) {
+    public void insert(LinkedTreeNode<T> element) {
         if (treeRoot == null) {
             treeRoot = element;
         } else {
-            TreeNode<T> root = treeRoot;
+            if (search(element.getKey()) != null) {
+                return;
+            }
+
+            LinkedTreeNode<T> root = treeRoot;
             while (true) {
                 if (c.compare(root.getKey(), element.getKey()) > 0) {
                     if (root.getLeft() == null) {
@@ -62,8 +82,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      *            if there are many same keys, remove any of their corresponding treeNode
      */
     public void remove(T key) {
-        TreeNode<T> p, parent;
-        List<TreeNode<T>> searchResult = searchNodeAndParent(key);
+        LinkedTreeNode<T> p, parent;
+        List<LinkedTreeNode<T>> searchResult = searchNodeAndParent(key);
         p = searchResult.get(0);
         parent = searchResult.get(1);
 
@@ -77,8 +97,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         // 2. p的右子树不为空，且右子树存在左孩子
         // 3. p的右子树不为空，且右子树不存左孩子
 
-        TreeNode<T> successor; //找p的继承结点
-        TreeNode<T> parentOfSuccessor; // successor的父亲结点，注意: successor是左孩子
+        LinkedTreeNode<T> successor; //找p的继承结点
+        LinkedTreeNode<T> parentOfSuccessor; // successor的父亲结点，注意: successor是左孩子
 
         if (p.getRight() == null) { // 如果p的右子树为空，那么用p的左子树代替p
             successor = p.getLeft();
@@ -121,8 +141,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      * @param key 查找的关键字
      * @return a treeNode whose key is equal to the given key
      */
-    public TreeNode<T> search(T key) {
-        TreeNode<T> root = treeRoot;
+    public LinkedTreeNode<T> search(T key) {
+        LinkedTreeNode<T> root = treeRoot;
 
         while (root != null) {
             if (c.compare(root.getKey(), key) > 0) {
@@ -142,8 +162,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      * @param key the given key
      * @return [node, its parent]
      */
-    public List<TreeNode<T>> searchNodeAndParent(T key) {
-        ArrayList<TreeNode<T>> res = new ArrayList<>();
+    public List<LinkedTreeNode<T>> searchNodeAndParent(T key) {
+        ArrayList<LinkedTreeNode<T>> res = new ArrayList<>();
         // 如果树为空，或者根的关键字就等于key，那么就返回null
         if (treeRoot == null) {
             res.add(null);
@@ -157,8 +177,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             return res;
         }
 
-        TreeNode<T> root = treeRoot;
-        TreeNode<T> leftChild, rightChild;
+        LinkedTreeNode<T> root = treeRoot;
+        LinkedTreeNode<T> leftChild, rightChild;
 
         while (root != null) {
             leftChild = root.getLeft();
@@ -184,18 +204,5 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         res.add(null);
         res.add(null);
         return res;
-    }
-
-    public static BinarySearchTree<Integer> getRandomTree(int n){
-        Comparator<Integer> c = Integer::compareTo;
-        BinarySearchTree<Integer> tree = new BinarySearchTree<>(c);
-
-        Random random = new Random();
-
-        for (int i = 0; i < n; i++) {
-            tree.insert(new TreeNode<>(random.nextInt(10000)));
-        }
-
-        return tree;
     }
 }
