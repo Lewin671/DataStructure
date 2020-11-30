@@ -78,7 +78,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
     /**
      * remove the treeNode by its key
      *
-     * @param key the key of a treeNode which will be removed
+     * @param key the key of which a treeNode will be removed
      *            if there are many same keys, remove any of their corresponding treeNode
      */
     public void remove(T key) {
