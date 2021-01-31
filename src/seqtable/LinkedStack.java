@@ -13,18 +13,14 @@ public class LinkedStack<T> {
         size = 0;
     }
 
-    public boolean push(T element) {
+    public void push(T element) {
         Node node = new Node(element);
-        if (node == null) {
-            return false;
-        }
         node.next = top;
         //System.out.println("before "+size);
         top = node;
         //System.out.println("after "+size);
 
         size++;
-        return true;
     }
 
     public T pop() {
@@ -70,9 +66,8 @@ public class LinkedStack<T> {
             duplicate.push(p.data);
             p = p.next;
         }
-        return  duplicate;
+        return duplicate;
     }
-
 
 
     @Override

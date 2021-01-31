@@ -3,14 +3,14 @@ package seqtable;
 public class LinkedQueue<T> {
     private Node front, rear;
     private int size;
+
     public LinkedQueue() {
         size = 0;
         front = rear = null;
     }
 
-    public boolean push(T element) {
+    public void push(T element) {
         Node node = new Node(element);
-        if (node == null) return false;
 
         // 插入
         if (isEmpty()) {
@@ -21,7 +21,6 @@ public class LinkedQueue<T> {
 
         rear = node;
         size++;
-        return true;
     }
 
     public T pop() {

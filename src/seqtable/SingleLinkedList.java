@@ -36,13 +36,16 @@ public class SingleLinkedList<T> {
     }
 
     /**
-     * @param o 检查的元素
-     * @return 如果包含o，则返回true，否则返回false
+     * @param element 检查的元素
+     * @return 如果包含element，则返回true，否则返回false
      */
-    public boolean contains(Object o) {
+    public boolean contains(T element) {
         Iterator<T> it = iterator();
-        T p = null;
-        while (it.hasNext() && it.next().equals(o)) {
+
+        while (it.hasNext()) {
+            if (it.next().equals(element)) {
+                return true;
+            }
         }
         return false;
     }
@@ -51,6 +54,7 @@ public class SingleLinkedList<T> {
      * @return 链表的迭代器
      */
     public Iterator<T> iterator() {
+        // 返回匿名内部类
         return new Iterator<T>() {
             private Node p = head;
 
@@ -68,54 +72,32 @@ public class SingleLinkedList<T> {
     }
 
     /**
-     * @param index 第i个链表结点的下标(哨兵的下标记为0)
-     * @return 第i个链表结点
+     * 添加元素到链表尾部
+     *
+     * @param element 要添加的元素
      */
-    private Node getNode(int index) {
-        if (index <= 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
-        Node p = head;
-        for (int i = 0; i < index; i++) {
-            p = p.next;
-        }
-        return p;
+    public void add(T element) {
+        getTailItem().next = new Node(element);
+        size++;
     }
 
     /**
-     * @return 返回链表尾部结点
+     * @param element 要删除的元素，根据判断两个元素是否equal来删除。 一次调用最多删除一次
      */
-    private Node getTailItem() {
-        if (isEmpty()) return head;
-        return getNode(size);
-    }
-
-    public boolean add(T t) {
-        Node node = new Node(t);
-        if (node != null) {
-            getTailItem().next = node;
-            size++;
-        }
-        return false;
-    }
-
-    /**
-     * @param o 要删除的元素，根据判断两个元素是否equal来删除。 一次调用最多删除一次
-     * @return 如果删除成功，则返回true；否则返回false
-     */
-    public boolean remove(Object o) {
+    public void remove(T element) {
         Node p = head;
         while (p.next != null) {
-            if (p.next.data.equals(o)) {
+            if (p.next.data.equals(element)) {
                 Node removedNode = p.next;
                 p.next = removedNode.next;
                 removedNode.next = null;
                 size--;
-                return true;
+                return;
             }
             p = p.next;
         }
-        return false;
+
+        // element元素不在链表中
     }
 
     /**
@@ -128,7 +110,7 @@ public class SingleLinkedList<T> {
     }
 
     /**
-     * @param index 第index个元素的下标
+     * @param index 第index个元素的下标,index从o开始
      * @return 获取第index元素的值
      */
     public T get(int index) {
@@ -152,6 +134,9 @@ public class SingleLinkedList<T> {
      * @return 被删除的元素的值
      */
     public T remove(int index) {
+        if (index < 0 || index >= size) {
+            return null;
+        }
         Node node = getNode(index);
         remove(node.data);
         return node.data;
@@ -162,16 +147,43 @@ public class SingleLinkedList<T> {
      */
     @Override
     public String toString() {
-        String s = "SingleLinkedList[";
+        StringBuilder s = new StringBuilder("SingleLinkedList[");
         Iterator<T> iterator = iterator();
         while (iterator.hasNext()) {
-            s = s + (iterator.next().toString());
+            s.append(iterator.next().toString());
             if (iterator.hasNext()) {
-                s += ",";
+                s.append(",");
             }
         }
-        s = s + "]";
-        return s;
+        s.append("]");
+
+        s.append(" size: ");
+        s.append(size);
+        return s.toString();
+    }
+
+    /**
+     * @param index 元素的下标，从0开始计算
+     * @return 第i个链表结点
+     */
+    private Node getNode(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Node p = head;
+        for (int i = 0; i <= index; i++) {
+            p = p.next;
+        }
+        return p;
+    }
+
+    /**
+     * @return 返回链表尾部结点
+     */
+    private Node getTailItem() {
+        if (isEmpty()) return head;
+        return getNode(size - 1);
     }
 
     // 内部节点
