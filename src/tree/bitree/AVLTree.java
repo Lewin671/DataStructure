@@ -1,6 +1,6 @@
 package tree.bitree;
 
-import tree.node.AVLLinkedTreeNode;
+import tree.node.AVLTreeNode;
 
 import java.util.Comparator;
 
@@ -17,7 +17,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         super(comparator);
     }
 
-    public AVLTree(AVLLinkedTreeNode<T> treeRoot, Comparator<T> comparator) {
+    public AVLTree(AVLTreeNode<T> treeRoot, Comparator<T> comparator) {
         super(treeRoot, comparator);
     }
 
@@ -27,7 +27,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      *
      * @param element The element that will inserted into the tree
      */
-    public void insert(AVLLinkedTreeNode<T> element) {
+    public void insert(AVLTreeNode<T> element) {
         // don't support to insert the same key node
         if (search(element.getKey()) == null)
             treeRoot = insert(getRoot(), element);
@@ -40,7 +40,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      * @param element The element that will inserted into the tree
      * @return an new root with inserted element
      */
-    private AVLLinkedTreeNode<T> insert(AVLLinkedTreeNode<T> root, AVLLinkedTreeNode<T> element) {
+    private AVLTreeNode<T> insert(AVLTreeNode<T> root, AVLTreeNode<T> element) {
         // 如果元素为空，则不插入
         if (element == null) {
             return root;
@@ -54,7 +54,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         int cmp = c.compare(element.getKey(), root.getKey());
 
         if (cmp > 0) {
-            AVLLinkedTreeNode<T> rightChild = root.getRight();
+            AVLTreeNode<T> rightChild = root.getRight();
             // 如果没有右孩子了，那么就只能直接插入了
             if (rightChild == null) {
                 root.setRight(element);
@@ -62,7 +62,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
                 root.setRight(insert(rightChild, element));
             }
         } else {
-            AVLLinkedTreeNode<T> leftChild = root.getLeft();
+            AVLTreeNode<T> leftChild = root.getLeft();
             if (leftChild == null) {
                 root.setLeft(element);
             } else {
@@ -103,8 +103,8 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      *
      * @param root 这里的root需要确保不为null
      */
-    private AVLLinkedTreeNode<T> remove(AVLLinkedTreeNode<T> root, T key) {
-        AVLLinkedTreeNode<T> res;
+    private AVLTreeNode<T> remove(AVLTreeNode<T> root, T key) {
+        AVLTreeNode<T> res;
 
         int cmp = c.compare(key, root.getKey());
         if (cmp < 0) { // 在左子树上删除
@@ -115,14 +115,14 @@ public class AVLTree<T> extends BinarySearchTree<T> {
             res = root;
         } else {
             // root的右孩子
-            final AVLLinkedTreeNode<T> rightChild = root.getRight();
+            final AVLTreeNode<T> rightChild = root.getRight();
 
             // 如果右子树为空,则用其左子树的第一个结点来代替root
             if (rightChild == null) {
                 res = root.getLeft();
             } else { // 如果右子树不为空
                 // root的右孩子的左孩子
-                AVLLinkedTreeNode<T> subLeftChild = rightChild.getLeft();
+                AVLTreeNode<T> subLeftChild = rightChild.getLeft();
 
                 if (subLeftChild == null) {
                     // 用rightChild代替root
@@ -132,13 +132,13 @@ public class AVLTree<T> extends BinarySearchTree<T> {
                 } else {
                     // 用中序后继来替代root
                     // 此时的中序后继在右孩子的左子树上
-                    AVLLinkedTreeNode<T> successor = rightChild;
+                    AVLTreeNode<T> successor = rightChild;
                     while (successor.getLeft() != null) {
                         successor = successor.getLeft();
                     }
 
                     // 注意,successor的改动会影响后续的结果
-                    AVLLinkedTreeNode<T> newRightChild = remove(rightChild, successor.getKey());
+                    AVLTreeNode<T> newRightChild = remove(rightChild, successor.getKey());
                     successor.setRight(newRightChild);
                     successor.setLeft(root.getLeft());
 
@@ -163,7 +163,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      * @param root the root of an AVLTree
      * @return true if the root is an AVLTree. Otherwise, return false
      */
-    private boolean verifyAVLTree(AVLLinkedTreeNode<T> root) {
+    private boolean verifyAVLTree(AVLTreeNode<T> root) {
         if (root == null) {
             return true;
         } else {
@@ -177,14 +177,14 @@ public class AVLTree<T> extends BinarySearchTree<T> {
     }
 
     @Override
-    public AVLLinkedTreeNode<T> getRoot() {
-        return (AVLLinkedTreeNode<T>) treeRoot;
+    public AVLTreeNode<T> getRoot() {
+        return (AVLTreeNode<T>) treeRoot;
     }
 
 
-    private AVLLinkedTreeNode<T> LLRotate(AVLLinkedTreeNode<T> node) {
-        AVLLinkedTreeNode<T> res = node.getLeft();
-        AVLLinkedTreeNode<T> r = res.getRight();
+    private AVLTreeNode<T> LLRotate(AVLTreeNode<T> node) {
+        AVLTreeNode<T> res = node.getLeft();
+        AVLTreeNode<T> r = res.getRight();
         // 向右旋转
         node.setLeft(r);
         res.setRight(node);
@@ -195,9 +195,9 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return res;
     }
 
-    private AVLLinkedTreeNode<T> RRRotate(AVLLinkedTreeNode<T> node) {
-        AVLLinkedTreeNode<T> res = node.getRight();
-        AVLLinkedTreeNode<T> l = res.getLeft();
+    private AVLTreeNode<T> RRRotate(AVLTreeNode<T> node) {
+        AVLTreeNode<T> res = node.getRight();
+        AVLTreeNode<T> l = res.getLeft();
         // 向右旋转
         node.setRight(l);
         res.setLeft(node);
@@ -208,7 +208,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return res;
     }
 
-    private AVLLinkedTreeNode<T> LRRotate(AVLLinkedTreeNode<T> node) {
+    private AVLTreeNode<T> LRRotate(AVLTreeNode<T> node) {
         // 先对node.left进行RR旋转
         node.setLeft(RRRotate(node.getLeft()));
         node.updateHeight();
@@ -216,7 +216,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         return LLRotate(node);
     }
 
-    private AVLLinkedTreeNode<T> RLRotate(AVLLinkedTreeNode<T> node) {
+    private AVLTreeNode<T> RLRotate(AVLTreeNode<T> node) {
         // 先对node.right进行LL旋转
         node.setRight(LLRotate(node.getRight()));
         node.updateHeight();
@@ -229,10 +229,10 @@ public class AVLTree<T> extends BinarySearchTree<T> {
      * @param node a node may be balanced
      * @return a new balanced node root
      */
-    private AVLLinkedTreeNode<T> balance(AVLLinkedTreeNode<T> node) {
+    private AVLTreeNode<T> balance(AVLTreeNode<T> node) {
         int bf = node.getBf();
         if (bf > 1) {
-            AVLLinkedTreeNode<T> rightChild = node.getRight();
+            AVLTreeNode<T> rightChild = node.getRight();
             // 注意等号的情况
             if (rightChild.getLeftHeight() <= rightChild.getRightHeight()) {
                 //System.out.println("RR旋转");
@@ -244,7 +244,7 @@ public class AVLTree<T> extends BinarySearchTree<T> {
         }
 
         if (bf < -1) {
-            AVLLinkedTreeNode<T> leftChild = node.getLeft();
+            AVLTreeNode<T> leftChild = node.getLeft();
             if (leftChild.getLeftHeight() < leftChild.getRightHeight()) {
                 //System.out.println("LR旋转");
                 return LRRotate(node);

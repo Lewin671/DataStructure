@@ -1,12 +1,24 @@
 package tree.node;
 
 /**
- * 树结点抽象类，其中key值保存树的关键字
+ * 二叉链式树结点
  *
- * @param <T> 树结点的类型
+ * @param <T> 关键字的类型
  */
-public abstract class TreeNode<T> {
+public class TreeNode<T> {
+
     protected T key;
+    // 此结点的左右孩子
+    protected TreeNode<T> left, right;
+
+    public TreeNode(T key) {
+        this.key = key;
+        left = right = null;
+    }
+
+    public TreeNode() {
+        this(null);
+    }
 
     public T getKey() {
         return key;
@@ -16,11 +28,28 @@ public abstract class TreeNode<T> {
         this.key = key;
     }
 
-    public abstract TreeNode<T> getLeft();
 
-    public abstract void setLeft(TreeNode<T> left);
+    public TreeNode<T> getLeft() {
+        return left;
+    }
 
-    public abstract TreeNode<T> getRight();
 
-    public abstract void setRight(TreeNode<T> right);
+    public void setLeft(TreeNode<T> left) {
+        this.left = left;
+    }
+
+
+    public TreeNode<T> getRight() {
+        return right;
+    }
+
+
+    public void setRight(TreeNode<T> right) {
+        this.right = right;
+    }
+
+    @Override
+    public String toString() {
+        return key.toString();
+    }
 }

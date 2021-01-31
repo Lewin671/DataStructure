@@ -1,7 +1,5 @@
 package sort.test;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class Test {
         return res / n;
     }
 
-    static void removeBiggestAndSmallestData(@NotNull List<Double> list) {
+    static void removeBiggestAndSmallestData(List<Double> list) {
         int maxIndex = 0;
         int minIndex = 0;
         for (int i = 0; i < list.size(); i++) {

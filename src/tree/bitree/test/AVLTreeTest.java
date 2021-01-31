@@ -1,7 +1,7 @@
 package tree.bitree.test;
 
 import tree.bitree.AVLTree;
-import tree.node.AVLLinkedTreeNode;
+import tree.node.AVLTreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class AVLTreeTest {
     static void test(int n, List<Integer> inputList, AVLTree<Integer> tree) {
         for (int i = 0; i < n; i++) {
             int item = inputList.get(i);//in.nextInt();//
-            tree.insert(new AVLLinkedTreeNode<>(item));
+            tree.insert(new AVLTreeNode<>(item));
             if (tree.verifyAVLTree()) {
                 System.out.println(inputList);
                 System.out.println(tree);
@@ -103,7 +103,7 @@ public class AVLTreeTest {
 
         System.out.println("开始人工测试");
         for (int i = 0; i < n; i++) {
-            tree.insert(new AVLLinkedTreeNode<>(in.nextInt()));
+            tree.insert(new AVLTreeNode<>(in.nextInt()));
         }
 
         System.out.println("插入完成的情况\n" + tree);

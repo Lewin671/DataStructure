@@ -1,6 +1,7 @@
 package tree.bitree;
 
-import tree.node.LinkedTreeNode;
+
+import tree.node.TreeNode;
 
 import java.util.*;
 
@@ -12,9 +13,9 @@ import java.util.*;
  * @param <T> 关键字的类型
  */
 public class BinaryTree<T> {
-    protected LinkedTreeNode<T> treeRoot; // 需要继承给BinarySearchTree
+    protected TreeNode<T> treeRoot; // 需要继承给BinarySearchTree
 
-    public BinaryTree(LinkedTreeNode<T> root) {
+    public BinaryTree(TreeNode<T> root) {
         treeRoot = root;
     }
 
@@ -22,7 +23,7 @@ public class BinaryTree<T> {
         treeRoot = null;
     }
 
-    public static <T> void traversePreOrder(StringBuilder sb, String padding, String pointer, LinkedTreeNode<T> node, boolean hasRightSibling) {
+    public static <T> void traversePreOrder(StringBuilder sb, String padding, String pointer, TreeNode<T> node, boolean hasRightSibling) {
         if (node != null) {
             sb.append(padding);
             sb.append(pointer);
@@ -34,9 +35,9 @@ public class BinaryTree<T> {
             }
 
             StringBuilder paddingBuilder = new StringBuilder(padding);
-            if(hasRightSibling) {
+            if (hasRightSibling) {
                 paddingBuilder.append("│  ");
-            }else{
+            } else {
                 paddingBuilder.append("   ");
             }
 
@@ -44,9 +45,9 @@ public class BinaryTree<T> {
             String pointerForRight = "└──";
             String pointerForLeft = (node.getRight() != null) ? "├──" : "└──";
 
-            traversePreOrder(sb, paddingForBoth, pointerForLeft, node.getLeft(),true);
+            traversePreOrder(sb, paddingForBoth, pointerForLeft, node.getLeft(), true);
             traversePreOrder(sb, paddingForBoth, pointerForRight, node.getRight(), false);
-        }else {
+        } else {
             sb.append(padding);
             sb.append(pointer);
             sb.append("null");
@@ -59,20 +60,20 @@ public class BinaryTree<T> {
     }
 
     // 非递归先序遍历，尾递归优化
-    protected List<T> preOrder(LinkedTreeNode<T> root) {
+    protected List<T> preOrder(TreeNode<T> root) {
         ArrayList<T> res = new ArrayList<>();
         // 如果树为空
         if (root == null) return res;
 
         // 如果树不为空
-        Deque<LinkedTreeNode<T>> stack = new ArrayDeque<>();
+        Deque<TreeNode<T>> stack = new ArrayDeque<>();
         // 初始化
         stack.push(root);
         // 迭代
         // 注意stack有reverse的效果
 
         while (!stack.isEmpty()) {
-            LinkedTreeNode<T> cur = stack.pop();
+            TreeNode<T> cur = stack.pop();
             res.add(cur.getKey());
             if (cur.getRight() != null) {
                 stack.push(cur.getRight());
@@ -85,18 +86,18 @@ public class BinaryTree<T> {
         return res;
     }
 
-    public List<T> inOrder(){
+    public List<T> inOrder() {
         return inOrder(getRoot());
     }
 
     // 非递归中序遍历
-    protected List<T> inOrder(LinkedTreeNode<T> root) {
+    protected List<T> inOrder(TreeNode<T> root) {
         ArrayList<T> res = new ArrayList<>();
         // 如果树为空
         if (root == null) return res;
 
         // 如果树不为空
-        Deque<LinkedTreeNode<T>> stack = new ArrayDeque<>();
+        Deque<TreeNode<T>> stack = new ArrayDeque<>();
 
         // 迭代
         while (!stack.isEmpty() || root != null) {
@@ -112,15 +113,15 @@ public class BinaryTree<T> {
     }
 
     // 非递归后续遍历
-    protected List<T> postOrder(LinkedTreeNode<T> root) {
+    protected List<T> postOrder(TreeNode<T> root) {
         LinkedList<T> res = new LinkedList<>();
         // 如果树为空
         if (root == null) return res;
 
         // 如果树不为空
-        Deque<LinkedTreeNode<T>> stack = new ArrayDeque<>();
+        Deque<TreeNode<T>> stack = new ArrayDeque<>();
         // 初始化
-        LinkedTreeNode<T> cur;
+        TreeNode<T> cur;
         stack.push(root);
 
         while (!stack.isEmpty()) {
@@ -141,7 +142,7 @@ public class BinaryTree<T> {
         return postOrder(treeRoot);
     }
 
-    private List<T> postOrderCountVersion(LinkedTreeNode<T> root) {
+    private List<T> postOrderCountVersion(TreeNode<T> root) {
         class Pair<K, V> {
             final K first;
             final V second;
@@ -154,11 +155,11 @@ public class BinaryTree<T> {
         }
         List<T> res = new LinkedList<>();
         if (root == null) return res;
-        Deque<Pair<LinkedTreeNode<T>, Integer>> stack = new ArrayDeque<>();
+        Deque<Pair<TreeNode<T>, Integer>> stack = new ArrayDeque<>();
         stack.push(new Pair<>(root, 0));
 
         while (!stack.isEmpty()) {
-            Pair<LinkedTreeNode<T>, Integer> cur = stack.pop();
+            Pair<TreeNode<T>, Integer> cur = stack.pop();
             if (cur.second == 0) { // 开始访问左子树
                 stack.push(new Pair<>(cur.first, 1));
                 if (cur.first.getLeft() != null) {
@@ -182,9 +183,9 @@ public class BinaryTree<T> {
         return binaryTree;
     }
 
-    private LinkedTreeNode<T> deepCloneHelper(LinkedTreeNode<T> root) {
+    private TreeNode<T> deepCloneHelper(TreeNode<T> root) {
         if (root == null) return null;
-        LinkedTreeNode<T> newRoot = new LinkedTreeNode<>();
+        TreeNode<T> newRoot = new TreeNode<>();
         newRoot.setKey(root.getKey());
         newRoot.setLeft(deepCloneHelper(root.getLeft()));
         newRoot.setRight(deepCloneHelper(root.getRight()));
@@ -193,7 +194,7 @@ public class BinaryTree<T> {
 
     @Override
     public String toString() {
-        if(getRoot() == null){
+        if (getRoot() == null) {
             return "";
         }
         String pointerForLeft = getRoot().getRight() == null ? "└──" : "├──";
@@ -203,12 +204,12 @@ public class BinaryTree<T> {
         sb.append(getRoot().toString());
         sb.append("\n");
 
-        traversePreOrder(sb,"",pointerForLeft,getRoot().getLeft(),true);
-        traversePreOrder(sb,"",pointerForRight,getRoot().getRight(),false);
+        traversePreOrder(sb, "", pointerForLeft, getRoot().getLeft(), true);
+        traversePreOrder(sb, "", pointerForRight, getRoot().getRight(), false);
         return sb.toString();
     }
 
-    public LinkedTreeNode<T> getRoot() {
+    public TreeNode<T> getRoot() {
         return treeRoot;
     }
 }

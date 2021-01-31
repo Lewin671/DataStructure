@@ -5,14 +5,23 @@ package tree.node;
  *
  * @param <T> 关键字的类型
  */
-public class AVLLinkedTreeNode<T> extends LinkedTreeNode<T> {
+public class AVLTreeNode<T> extends TreeNode<T> {
     // 树的高度，方便计算balance factor
     private int height;
 
-    public AVLLinkedTreeNode(T key) {
-        this.key = key;
-        left = right = null;
+    public AVLTreeNode(T key) {
+        super(key);
         this.height = 1;
+    }
+
+    @Override
+    public AVLTreeNode<T> getLeft() {
+        return (AVLTreeNode<T>) super.getLeft();
+    }
+
+    @Override
+    public AVLTreeNode<T> getRight() {
+        return (AVLTreeNode<T>) super.getRight();
     }
 
     // 计算balance factor
@@ -25,7 +34,8 @@ public class AVLLinkedTreeNode<T> extends LinkedTreeNode<T> {
         if (left == null) {
             return 0;
         } else {
-            return getLeft().height;
+            AVLTreeNode<T> left = getLeft();
+            return left.height;
         }
     }
 
@@ -34,18 +44,9 @@ public class AVLLinkedTreeNode<T> extends LinkedTreeNode<T> {
         if (right == null) {
             return 0;
         } else {
-            return getRight().height;
+            AVLTreeNode<T> right = getRight();
+            return right.height;
         }
-    }
-
-    @Override
-    public AVLLinkedTreeNode<T> getLeft() {
-        return (AVLLinkedTreeNode<T>) left;
-    }
-
-    @Override
-    public AVLLinkedTreeNode<T> getRight() {
-        return (AVLLinkedTreeNode<T>) right;
     }
 
     public void updateHeight() {

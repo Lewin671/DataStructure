@@ -1,6 +1,6 @@
 package tree.bitree;
 
-import tree.node.LinkedTreeNode;
+import tree.node.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,19 +23,19 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         this.c = comparator;
     }
 
-    public BinarySearchTree(LinkedTreeNode<T> treeRoot, Comparator<T> comparator) {
+    public BinarySearchTree(TreeNode<T> treeRoot, Comparator<T> comparator) {
         this.treeRoot = treeRoot;
         this.c = comparator;
     }
 
-    public static BinarySearchTree<Integer> getRandomTree(int n){
+    public static BinarySearchTree<Integer> getRandomTree(int n) {
         Comparator<Integer> c = Integer::compareTo;
         BinarySearchTree<Integer> tree = new BinarySearchTree<>(c);
 
         Random random = new Random();
 
         for (int i = 0; i < n; i++) {
-            tree.insert(new LinkedTreeNode<>(random.nextInt(10000)));
+            tree.insert(new TreeNode<>(random.nextInt(10000)));
         }
 
         return tree;
@@ -46,7 +46,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      *
      * @param element 插入到二叉搜索树的树结点
      */
-    public void insert(LinkedTreeNode<T> element) {
+    public void insert(TreeNode<T> element) {
         if (treeRoot == null) {
             treeRoot = element;
         } else {
@@ -54,7 +54,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
                 return;
             }
 
-            LinkedTreeNode<T> root = treeRoot;
+            TreeNode<T> root = treeRoot;
             while (true) {
                 if (c.compare(root.getKey(), element.getKey()) > 0) {
                     if (root.getLeft() == null) {
@@ -82,8 +82,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      *            if there are many same keys, remove any of their corresponding treeNode
      */
     public void remove(T key) {
-        LinkedTreeNode<T> p, parent;
-        List<LinkedTreeNode<T>> searchResult = searchNodeAndParent(key);
+        TreeNode<T> p, parent;
+        List<TreeNode<T>> searchResult = searchNodeAndParent(key);
         p = searchResult.get(0);
         parent = searchResult.get(1);
 
@@ -97,8 +97,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         // 2. p的右子树不为空，且右子树存在左孩子
         // 3. p的右子树不为空，且右子树不存左孩子
 
-        LinkedTreeNode<T> successor; //找p的继承结点
-        LinkedTreeNode<T> parentOfSuccessor; // successor的父亲结点，注意: successor是左孩子
+        TreeNode<T> successor; //找p的继承结点
+        TreeNode<T> parentOfSuccessor; // successor的父亲结点，注意: successor是左孩子
 
         if (p.getRight() == null) { // 如果p的右子树为空，那么用p的左子树代替p
             successor = p.getLeft();
@@ -141,8 +141,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      * @param key 查找的关键字
      * @return a treeNode whose key is equal to the given key
      */
-    public LinkedTreeNode<T> search(T key) {
-        LinkedTreeNode<T> root = treeRoot;
+    public TreeNode<T> search(T key) {
+        TreeNode<T> root = treeRoot;
 
         while (root != null) {
             if (c.compare(root.getKey(), key) > 0) {
@@ -162,8 +162,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
      * @param key the given key
      * @return [node, its parent]
      */
-    public List<LinkedTreeNode<T>> searchNodeAndParent(T key) {
-        ArrayList<LinkedTreeNode<T>> res = new ArrayList<>();
+    public List<TreeNode<T>> searchNodeAndParent(T key) {
+        ArrayList<TreeNode<T>> res = new ArrayList<>();
         // 如果树为空，或者根的关键字就等于key，那么就返回null
         if (treeRoot == null) {
             res.add(null);
@@ -177,8 +177,8 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
             return res;
         }
 
-        LinkedTreeNode<T> root = treeRoot;
-        LinkedTreeNode<T> leftChild, rightChild;
+        TreeNode<T> root = treeRoot;
+        TreeNode<T> leftChild, rightChild;
 
         while (root != null) {
             leftChild = root.getLeft();
